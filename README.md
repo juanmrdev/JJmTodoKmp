@@ -48,8 +48,6 @@ In this architecture, the module `:lib:todoTask` contains the **domain** logic f
 
 ### Structure Example in `:lib:todoTask`
 
-:lib:todoTask └── domain ├── model │ └── TaskModel.kt ├── repository │ └── TaskRepository.kt
-
 ### Why This Matters
 
 By isolating the domain in `:lib:todoTask`, we:
