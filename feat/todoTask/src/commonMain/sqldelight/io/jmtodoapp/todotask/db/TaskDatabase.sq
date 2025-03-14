@@ -1,0 +1,44 @@
+CREATE TABLE TaskTable (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  favorite INTEGER NOT NULL DEFAULT 0,
+  completed INTEGER NOT NULL DEFAULT 0
+);
+
+selectAll:
+SELECT * FROM TaskTable;
+
+selectById:
+SELECT * FROM TaskTable WHERE id = ?;
+
+selectByCompleted:
+SELECT * FROM TaskTable WHERE completed = ?;
+
+selectByFavorite:
+SELECT * FROM TaskTable WHERE favorite = ?;
+
+insert:
+INSERT INTO TaskTable (title, description, favorite, completed)
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE TaskTable
+SET title = ?, description = ?, favorite = ?, completed = ?
+WHERE id = ?;
+
+delete:
+DELETE FROM TaskTable WHERE id = ?;
+
+toggleFavorite:
+UPDATE TaskTable
+SET favorite = CASE WHEN favorite = 0 THEN 1 ELSE 0 END
+WHERE id = ?;
+
+toggleCompleted:
+UPDATE TaskTable
+SET completed = CASE WHEN completed = 0 THEN 1 ELSE 0 END
+WHERE id = ?;
+
+deleteCompleted:
+DELETE FROM TaskTable WHERE completed = 1;
