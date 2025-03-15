@@ -1,7 +1,7 @@
 package io.jmtodoapp.project
 
 import android.app.Application
-import io.jmtodoapp.project.database.DatabaseDriverFactory
+import io.jmtodoapp.project.database.createDriver
 import io.jmtodoapp.project.di.initKoin
 import io.jmtodoapp.todotask.db.TodoAppDatabase
 import io.jmtodoapp.todotask.di.todoTaskModule
@@ -18,7 +18,7 @@ class TodoTaskApplication: Application() {
             modules(
                 todoTaskModule(
                     TodoAppDatabase(
-                        driver = DatabaseDriverFactory(this@TodoTaskApplication).createDriver()
+                        driver = createDriver(this@TodoTaskApplication)
                     )
                 )
             )

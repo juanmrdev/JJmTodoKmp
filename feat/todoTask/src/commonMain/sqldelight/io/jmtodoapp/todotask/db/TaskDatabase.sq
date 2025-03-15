@@ -28,7 +28,8 @@ SET title = ?, description = ?, favorite = ?, completed = ?
 WHERE id = ?;
 
 delete:
-DELETE FROM TaskTable WHERE id = ?;
+DELETE FROM TaskTable
+WHERE id = ?;
 
 toggleFavorite:
 UPDATE TaskTable

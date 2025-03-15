@@ -76,14 +76,14 @@ private fun TaskListScreenContent(
             onClick = onAddTask,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Add New Task")
+            Text(text = "Add New Task", color = Color.White)
         }
 
         Button(
             onClick = onDeleteCompletedTask,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Delete Completed")
+            Text(text = "Delete Completed", color = Color.White)
         }
 
         Row(
@@ -91,12 +91,12 @@ private fun TaskListScreenContent(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             FilterChip(
-                selected = state.filterCompleted != null,
+                selected = state.filterCompleted,
                 onClick = onToggleFilterCompleted,
                 label = { Text("Completed") }
             )
             FilterChip(
-                selected = state.filterFavorite != null,
+                selected = state.filterFavorite,
                 onClick = onToggleFilterFavorite,
                 label = { Text("Favorite") }
             )
@@ -106,13 +106,15 @@ private fun TaskListScreenContent(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = state.tasks, key = { it.id }) { task ->
-                TaskItem(
-                    task = task,
-                    onClick = { onNavigateToDetail(task.id) },
-                    onToggleCompleted = { onToggleCompleted(task.id) },
-                    onToggleFavorite = { onToggleFavorite(task.id) }
-                )
+            items(items = state.tasks, key = { it?.id ?: 0 }) { task ->
+                task?.let {
+                    TaskItem(
+                        task = task,
+                        onClick = { onNavigateToDetail(task.id) },
+                        onToggleCompleted = { onToggleCompleted(task.id) },
+                        onToggleFavorite = { onToggleFavorite(task.id) }
+                    )
+                }
             }
         }
 

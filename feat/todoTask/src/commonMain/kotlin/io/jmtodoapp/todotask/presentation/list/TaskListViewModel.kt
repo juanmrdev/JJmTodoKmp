@@ -10,19 +10,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 
 @Stable
 data class TaskListState(
-    val tasks: List<TaskModel> = emptyList(),
-    val filterCompleted: Boolean? = null,
-    val filterFavorite: Boolean? = null,
+    val tasks: List<TaskModel?> = emptyList(),
+    val filterCompleted: Boolean = false,
+    val filterFavorite: Boolean = false,
     val errorMessage: String? = null
 )
 
 class TaskListViewModel(
     private val repository: TaskRepository
 ) : ViewModel() {
-    
+
     private val _state = MutableStateFlow(TaskListState())
     val state: StateFlow<TaskListState> = _state.asStateFlow()
 
@@ -34,10 +35,13 @@ class TaskListViewModel(
         viewModelScope.launch {
             repository.getAllTasks()
                 .combine(state) { tasks, currentState ->
+
                     val filteredTasks = tasks.filter { task ->
-                        (currentState.filterCompleted?.let { task.completed == it } ?: true) &&
-                                (currentState.filterFavorite?.let { task.favorite == it } ?: true)
+                        if (task == null) return@filter false
+                        (!currentState.filterCompleted || task.completed) &&
+                                (!currentState.filterFavorite || task.favorite)
                     }
+
                     currentState.copy(tasks = filteredTasks)
                 }
                 .collect { newState ->
@@ -81,15 +85,15 @@ class TaskListViewModel(
     }
 
     fun onToggleFilterCompleted() {
-        _state.value = _state.value.copy(
-            filterCompleted = true.takeIf { _state.value.filterCompleted == null }
-        )
+        _state.update {
+            it.copy(filterCompleted = it.filterCompleted.not())
+        }
     }
 
     fun onToggleFilterFavorite() {
-        _state.value = _state.value.copy(
-            filterFavorite = true.takeIf { _state.value.filterFavorite == null }
-        )
+        _state.update {
+            it.copy(filterFavorite = it.filterFavorite.not())
+        }
     }
 
     fun onDeleteCompleted() {

@@ -3,6 +3,7 @@ package io.jmtodoapp.todotask.data
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import io.jmtodoapp.todotask.db.TaskTable
 import io.jmtodoapp.todotask.db.TodoAppDatabase
 import io.jmtodoapp.todotask.domain.model.TaskModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class TaskRepositoryImpl(
     todoAppDatabase: TodoAppDatabase,
@@ -20,7 +22,7 @@ class TaskRepositoryImpl(
 ) : TaskRepository {
     private val queries = todoAppDatabase.taskDatabaseQueries
 
-    override fun getAllTasks(): Flow<List<TaskModel>> {
+    override fun getAllTasks(): Flow<List<TaskModel?>> {
         return queries.selectAll().asFlow()
             .mapToList(dispatcher)
             .map { table ->
@@ -30,11 +32,11 @@ class TaskRepositoryImpl(
 
     override fun getTaskById(id: Long): Flow<TaskModel?> {
         return queries.selectById(id).asFlow()
-            .mapToOne(dispatcher)
-            .map(TaskTable::toTaskModel)
+            .mapToOneOrNull(dispatcher)
+            .map { it.toTaskModel() }
     }
 
-    override fun getTasksByCompleted(completed: Boolean): Flow<List<TaskModel>> {
+    override fun getTasksByCompleted(completed: Boolean): Flow<List<TaskModel?>> {
         return queries.selectByCompleted(completed.toInt()).asFlow()
             .mapToList(dispatcher)
             .map {
@@ -42,7 +44,7 @@ class TaskRepositoryImpl(
             }
     }
 
-    override fun getTasksByFavorite(favorite: Boolean): Flow<List<TaskModel>> {
+    override fun getTasksByFavorite(favorite: Boolean): Flow<List<TaskModel?>> {
         return queries.selectByCompleted(favorite.toInt()).asFlow()
             .mapToList(dispatcher)
             .map {
@@ -78,13 +80,11 @@ class TaskRepositoryImpl(
         }
     }
 
-    override suspend fun deleteTask(id: Long): Result<Unit> {
+    override suspend fun deleteTask(id: Long): Result<Unit?> {
         return runCatching {
-            queries.transaction {
-                queries.delete(
-                    id = id
-                )
-            }
+            queries.delete(
+                id = id
+            )
         }
     }
 
@@ -117,12 +117,15 @@ class TaskRepositoryImpl(
     }
 }
 
-private fun TaskTable.toTaskModel() = TaskModel(
-    id = id,
-    title = title,
-    description = description,
-    favorite = favorite != 0L,
-    completed = completed != 0L
-)
+private fun TaskTable?.toTaskModel() = run {
+    if (this == null) return@run null
+    TaskModel(
+        id = id,
+        title = title,
+        description = description,
+        favorite = favorite != 0L,
+        completed = completed != 0L
+    )
+}
 
 private fun Boolean.toInt() = if (this) 1L else 0L
