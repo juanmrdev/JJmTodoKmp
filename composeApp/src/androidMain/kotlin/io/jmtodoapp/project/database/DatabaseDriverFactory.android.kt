@@ -9,7 +9,7 @@ fun createDriver(context: Context): SqlDriver {
     val driver = AndroidSqliteDriver(
         TodoAppDatabase.Schema,
         context,
-        "todo.db"
+        "TodoAppDatabase.db"
     )
     return driver
 }

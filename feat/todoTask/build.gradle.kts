@@ -46,15 +46,18 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.nav)
-            implementation(libs.sqlDelight.driver.sqlite)
+           // implementation(libs.sqlDelight.driver.sqlite)
             implementation(libs.sqldelight.coroutines.extensions)
             implementation(libs.runtime)
+        }
+        iosMain.dependencies {
+            implementation(libs.sqlDelight.driver.native)
         }
     }
 }
 
 android {
-    namespace = "io.jmtodoapp.project"
+    namespace = "io.jmtodoapp.todotask"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

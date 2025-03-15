@@ -7,7 +7,7 @@ import io.jmtodoapp.todotask.db.TodoAppDatabase
 fun createDriver(): SqlDriver {
     val driver: SqlDriver = NativeSqliteDriver(
         TodoAppDatabase.Schema,
-        "todo.db"
+        "TodoAppDatabase.db"
     )
     return driver
 }

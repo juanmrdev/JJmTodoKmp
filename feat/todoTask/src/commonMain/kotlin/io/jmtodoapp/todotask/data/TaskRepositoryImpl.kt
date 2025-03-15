@@ -2,19 +2,16 @@ package io.jmtodoapp.todotask.data
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOne
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import io.jmtodoapp.todotask.db.TaskTable
 import io.jmtodoapp.todotask.db.TodoAppDatabase
 import io.jmtodoapp.todotask.domain.model.TaskModel
 import io.jmtodoapp.todotask.domain.repository.TaskRepository
+import iojmtodoapptodotaskdb.TaskTable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 
 class TaskRepositoryImpl(
     todoAppDatabase: TodoAppDatabase,
