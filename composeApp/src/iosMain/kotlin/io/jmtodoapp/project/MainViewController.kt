@@ -6,8 +6,7 @@ import io.jmtodoapp.project.di.initKoin
 import io.jmtodoapp.todotask.db.TodoAppDatabase
 import io.jmtodoapp.todotask.di.todoTaskModule
 
-@Suppress("UNUSED")
-fun mainViewController() = ComposeUIViewController(
+fun MainViewController() = ComposeUIViewController(
     configure = {
         initKoin {
             todoTaskModule(
